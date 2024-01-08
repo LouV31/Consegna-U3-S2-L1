@@ -7,32 +7,30 @@ class SingleBook extends Component {
         selected: false,
     };
 
-    bordChange = () => {
-        if (this.state.selected) {
-            this.setState({ selected: false });
-        } else {
-            this.setState({ selected: true });
-        }
-    };
-
-    handleClick = () => {
-        if (this.props.onSelect) {
-            this.props.onSelect(this.props.bookId);
-        }
-        this.bordChange();
-    };
+    componentDidUpdate(prevProps) {
+        if (prevProps.selectedBook !== this.props.selectedBook) {
+            if (this.props.selectedBook === this.props.bookId) {
+                this.setState({ selected: true });
+            } else {
+                this.setState({ selected: false });
+            }
+        } /* else {
+            this.state.selected ? this.setState({ selected: false }) : this.setState({ selected: true });
+        } */
+    }
     render() {
         return (
             <Card
-                style={this.state.selected ? { minHeight: "550px", border: "10px solid red" } : { minHeight: "550px" }}
-                onClick={this.handleClick}
+                style={this.state.selected ? { minHeight: "550px", border: "1px solid red" } : { minHeight: "550px" }}
             >
                 <Card.Img
                     variant="top"
                     src={this.props.img}
                     className="img-fluid object-fit-contain "
                     style={{ maxHeight: "250px" }}
-                    onClick={this.bordChange}
+                    onClick={() => {
+                        this.props.setSelectedBook(this.props.bookId);
+                    }}
                 />
                 <Card.Body className="d-flex flex-column align-content-baseline justify-content-end">
                     <Card.Title>{this.props.title}</Card.Title>
@@ -40,7 +38,6 @@ class SingleBook extends Component {
                     <Card.Text>{this.props.price}</Card.Text>
 
                     <Button variant="primary">Go somewhere</Button>
-                    {this.state.selected && <CommentedArea asin={this.props.bookId} />}
                 </Card.Body>
             </Card>
         );
